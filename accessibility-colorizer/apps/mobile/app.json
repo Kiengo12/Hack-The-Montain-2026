@@ -1,0 +1,54 @@
+{
+  "expo": {
+    "name": "ChromaAccess",
+    "slug": "chroma-access",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "dark",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#0F0F0F"
+    },
+    "assetBundlePatterns": ["**/*"],
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "com.chromaaccess.app",
+      "infoPlist": {
+        "NSPhotoLibraryUsageDescription": "ChromaAccess needs access to your photo library to analyze artworks.",
+        "NSCameraUsageDescription": "ChromaAccess needs camera access to photograph artworks.",
+        "NSPhotoLibraryAddUsageDescription": "ChromaAccess needs permission to save corrected images."
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#0F0F0F"
+      },
+      "package": "com.chromaaccess.app",
+      "permissions": [
+        "READ_EXTERNAL_STORAGE",
+        "WRITE_EXTERNAL_STORAGE",
+        "CAMERA"
+      ]
+    },
+    "plugins": [
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "ChromaAccess needs access to your photos to analyze artworks.",
+          "cameraPermission": "ChromaAccess needs your camera to photograph artworks."
+        }
+      ],
+      [
+        "expo-media-library",
+        {
+          "photosPermission": "ChromaAccess needs access to your photos.",
+          "savePhotosPermission": "ChromaAccess needs permission to save corrected images.",
+          "isAccessMediaLocationEnabled": true
+        }
+      ]
+    ]
+  }
+}
