@@ -1,4 +1,4 @@
-#!/home/mr-kiengo/Hack-The-Montain-2026/accessibility-colorizer/backend/.venv/bin/python3
+#!/Users/tidjani/Documents/GitHub/Hack-The-Montain-2026/accessibility-colorizer/backend/.venv/bin/python3.12
 # -*- coding: utf-8 -*-
 import re
 import sys

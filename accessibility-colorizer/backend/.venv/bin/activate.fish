@@ -33,7 +33,7 @@ end
 # Unset irrelevant variables.
 deactivate nondestructive
 
-set -gx VIRTUAL_ENV /home/mr-kiengo/Hack-The-Montain-2026/accessibility-colorizer/backend/.venv
+set -gx VIRTUAL_ENV /Users/tidjani/Documents/GitHub/Hack-The-Montain-2026/accessibility-colorizer/backend/.venv
 
 set -gx _OLD_VIRTUAL_PATH $PATH
 set -gx PATH "$VIRTUAL_ENV/"bin $PATH
