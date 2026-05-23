@@ -5,15 +5,27 @@ import uuid
 import numpy as np
 from fastapi import APIRouter, HTTPException, UploadFile
 from PIL import Image
+from pillow_heif import register_heif_opener
 
 from app.models.schemas import UploadResponse
+
+register_heif_opener()
 
 router = APIRouter()
 
 # In-memory image store keyed by UUID
 _image_store: dict[str, np.ndarray] = {}
 
-ALLOWED_CONTENT_TYPES = {"image/jpeg", "image/png", "image/webp"}
+ALLOWED_CONTENT_TYPES = {
+    "image/heic",
+    "image/heif",
+    "image/heic-sequence",
+    "image/heif-sequence",
+    "image/jpeg",
+    "image/png",
+    "image/webp",
+}
+SUPPORTED_FORMATS_MESSAGE = "Use JPEG, PNG, WEBP, HEIC, or HEIF."
 MAX_SIDE = 1920
 
 
@@ -30,7 +42,7 @@ async def upload_image(file: UploadFile) -> UploadResponse:
     if file.content_type not in ALLOWED_CONTENT_TYPES:
         raise HTTPException(
             status_code=415,
-            detail=f"Unsupported file type '{file.content_type}'. Use JPEG, PNG, or WEBP.",
+            detail=f"Unsupported file type '{file.content_type}'. {SUPPORTED_FORMATS_MESSAGE}",
         )
 
     data = await file.read()

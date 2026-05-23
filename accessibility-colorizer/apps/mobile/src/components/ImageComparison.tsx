@@ -1,5 +1,5 @@
-import React from 'react';
-import { Image, StyleSheet, Text, View } from 'react-native';
+import React, { useEffect } from 'react';
+import { Image, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -22,11 +22,22 @@ export function ImageComparison({
   width,
   height,
 }: Props) {
-  const dividerX = useSharedValue(width / 2);
+  const { width: windowWidth, height: windowHeight } = useWindowDimensions();
+  const aspectRatio = width / height;
+  const maxPreviewWidth = Math.max(1, windowWidth - 48);
+  const maxPreviewHeight = Math.max(240, windowHeight * 0.55);
+  const previewWidth = Math.min(maxPreviewWidth, maxPreviewHeight * aspectRatio);
+  const previewHeight = previewWidth / aspectRatio;
+
+  const dividerX = useSharedValue(previewWidth / 2);
+
+  useEffect(() => {
+    dividerX.value = previewWidth / 2;
+  }, [dividerX, previewWidth]);
 
   const pan = Gesture.Pan()
     .onUpdate((e) => {
-      dividerX.value = clamp(e.x, 0, width);
+      dividerX.value = clamp(e.x, 0, previewWidth);
     })
     .runOnJS(false);
 
@@ -35,7 +46,7 @@ export function ImageComparison({
   }));
 
   const correctedClipStyle = useAnimatedStyle(() => ({
-    width: width - dividerX.value,
+    width: previewWidth - dividerX.value,
     transform: [{ translateX: dividerX.value }],
   }));
 
@@ -44,19 +55,18 @@ export function ImageComparison({
     top: 0,
     bottom: 0,
     left: -dividerX.value,
-    width,
+    width: previewWidth,
+    height: previewHeight,
   }));
-
-  const aspectRatio = width / height;
 
   return (
     <GestureDetector gesture={pan}>
-      <View style={[styles.container, { width, aspectRatio }]}>
+      <View style={[styles.container, { width: previewWidth, height: previewHeight }]}>
         {/* Original — full width, bottom layer */}
         <Image
           source={{ uri: originalUri }}
           style={StyleSheet.absoluteFill}
-          resizeMode="cover"
+          resizeMode="contain"
         />
 
         {/* Corrected — clipped to right of divider */}
@@ -64,7 +74,7 @@ export function ImageComparison({
           <Animated.Image
             source={{ uri: `data:image/png;base64,${correctedBase64}` }}
             style={correctedImageStyle}
-            resizeMode="cover"
+            resizeMode="contain"
           />
         </Animated.View>
 
@@ -81,6 +91,7 @@ export function ImageComparison({
 
 const styles = StyleSheet.create({
   container: {
+    alignSelf: 'center',
     overflow: 'hidden',
     borderRadius: 12,
     backgroundColor: Colors.surface,

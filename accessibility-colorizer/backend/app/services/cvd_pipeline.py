@@ -1,8 +1,20 @@
 import base64
 import io
+from pillow_heif import register_heif_opener
+import io
 
 import numpy as np
 from PIL import Image
+
+register_heif_opener()
+
+def convert_to_jpeg(file_bytes: bytes, content_type: str) -> bytes:
+    if content_type in ("image/heic", "image/heif"):
+        img = Image.open(io.BytesIO(file_bytes))
+        buffer = io.BytesIO()
+        img.save(buffer, format="JPEG", quality=90)
+        return buffer.getvalue()
+    return file_bytes
 
 # Confusion matrices for CVD simulation (Viénot et al. 1999 / Brettel 1997)
 # Each maps LMS → simulated LMS for full dichromacy

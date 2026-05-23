@@ -4,6 +4,20 @@ import os
 
 import anthropic
 
+from PIL import Image
+import io
+
+def resize_image_b64(image_b64: str, max_size: int = 1568) -> str:
+    img_bytes = base64.b64decode(image_b64)
+    img = Image.open(io.BytesIO(img_bytes))
+    
+    if max(img.size) > max_size:
+        img.thumbnail((max_size, max_size), Image.LANCZOS)
+    
+    buffer = io.BytesIO()
+    img.save(buffer, format="JPEG", quality=85)
+    return base64.b64encode(buffer.getvalue()).decode()
+
 _SYSTEM_PROMPT = (
     "You are an expert accessibility consultant specializing in visual art and "
     "color vision deficiency (CVD). You analyze paintings and artworks to identify "
@@ -62,6 +76,10 @@ async def analyze_with_claude(
         contrast_pairs_json=json.dumps(contrast_pairs[:10], indent=2),
     )
 
+    image_array_base64 = resize_image_b64(image_array_base64)
+    print(f"Image b64 size after resize: {len(image_array_base64) / 1024:.1f} KB")
+
+
     message = await client.messages.create(
         model="claude-opus-4-5",
         max_tokens=2048,
@@ -74,7 +92,7 @@ async def analyze_with_claude(
                         "type": "image",
                         "source": {
                             "type": "base64",
-                            "media_type": "image/png",
+                            "media_type": "image/jpeg",
                             "data": image_array_base64,
                         },
                     },

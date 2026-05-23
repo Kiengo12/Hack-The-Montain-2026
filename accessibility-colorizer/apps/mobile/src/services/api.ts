@@ -78,9 +78,17 @@ async function parseErrorResponse(response: Response): Promise<string> {
 async function upload(imageUri: string): Promise<UploadResponse> {
   const form = new FormData();
   const filename = imageUri.split('/').pop() ?? 'image.jpg';
-  const ext = filename.split('.').pop()?.toLowerCase();
+  const ext = filename.split('?')[0].split('.').pop()?.toLowerCase();
   const mimeType =
-    ext === 'png' ? 'image/png' : ext === 'webp' ? 'image/webp' : 'image/jpeg';
+    ext === 'png'
+      ? 'image/png'
+      : ext === 'webp'
+        ? 'image/webp'
+        : ext === 'heic'
+          ? 'image/heic'
+          : ext === 'heif'
+            ? 'image/heif'
+            : 'image/jpeg';
 
   form.append('file', {
     uri: imageUri,
