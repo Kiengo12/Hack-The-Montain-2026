@@ -96,10 +96,10 @@ export function MuseumModeScreen() {
 
         <View style={styles.pickerRow}>
           <Pressable style={styles.btn} onPress={() => handlePick('gallery')}>
-            <Text style={styles.btnText}>📂 Gallery</Text>
+            <Text style={styles.btnText}>Gallery</Text>
           </Pressable>
           <Pressable style={styles.btn} onPress={() => handlePick('camera')}>
-            <Text style={styles.btnText}>📷 Camera</Text>
+            <Text style={styles.btnText}>Camera</Text>
           </Pressable>
         </View>
 
